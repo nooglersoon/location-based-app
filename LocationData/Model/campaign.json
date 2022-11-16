@@ -1,0 +1,80 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "Bantu Mike Melawan Sakit Tulang",
+        "category_name": "Bantuan Medis & kesehatan",
+        "donation_target": 125000000
+      },
+      "geometry": {
+        "coordinates": [
+          106.84064393836763,
+          -6.18364468402801
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "Pembangunan Sekolah Sam Ratulangi",
+        "category_name": "Bantuan Pendidikan",
+        "donation_target": 500000000
+      },
+      "geometry": {
+        "coordinates": [
+          106.82916208924047,
+          -6.190942909645159
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "Penanaman Tembakau di Bundaran HI",
+        "category_name": "Lingkungan",
+        "donation_target": 125000000
+      },
+      "geometry": {
+        "coordinates": [
+          106.82612054694584,
+          -6.192259391179846
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "Pembangunan Holy Wings",
+        "category_name": "Bantuan Pendidikan",
+        "donation_target": 750000000
+      },
+      "geometry": {
+        "coordinates": [
+          106.83500714466965,
+          -6.200909737220385
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "Bantu Kafi Terbang 10 Tahun",
+        "category_name": "Bantuan Medis & kesehatan",
+        "donation_target": 123456789
+      },
+      "geometry": {
+        "coordinates": [
+          106.8404496228626,
+          -6.190909636322488
+        ],
+        "type": "Point"
+      }
+    }
+  ]
+}

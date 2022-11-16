@@ -1,0 +1,137 @@
+import UIKit
+import MapKit
+
+
+class VisualizationViewController: UIViewController {
+    
+    private let mapView: MKMapView = {
+        let mapView = MKMapView()
+        mapView.translatesAutoresizingMaskIntoConstraints = false
+        return mapView
+    }()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.addSubview(mapView)
+        setupViews()
+        if let localData = readLocalFile(forName: "campaign") {
+            parse(jsonData: localData)
+        }
+    }
+    
+    func setupViews() {
+        mapView.delegate = self
+        NSLayoutConstraint.activate([
+            mapView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            mapView.topAnchor.constraint(equalTo: view.topAnchor),
+            mapView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            mapView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+    }
+    
+}
+
+extension VisualizationViewController: MKMapViewDelegate {
+    
+    func parseGeoJSON() -> [MKOverlay] {
+        guard let url = Bundle.main.url(forResource: "campaign", withExtension: "geojson") else {
+            fatalError("Unable to get geojson")
+        }
+        
+        var geoJson = [MKGeoJSONObject]()
+        
+        do {
+            let data = try Data(contentsOf: url)
+            geoJson = try MKGeoJSONDecoder().decode(data)
+        } catch {
+            fatalError("Unable to decode geojson")
+        }
+        
+        var overlays = [MKOverlay]()
+        
+        for item in geoJson {
+            if let feature = item as? MKGeoJSONFeature {
+                for geo in feature.geometry {
+                    if let point = geo as? MKOverlay {
+                        overlays.append(point)
+                    }
+                }
+            }
+        }
+        
+        return overlays
+        
+    }
+    
+    private func readLocalFile(forName name: String) -> Data? {
+        do {
+            if let bundlePath = Bundle.main.path(forResource: name,
+                                                 ofType: "json"),
+                let jsonData = try String(contentsOfFile: bundlePath).data(using: .utf8) {
+                return jsonData
+            }
+        } catch {
+            print(error)
+        }
+        
+        return nil
+    }
+
+    private func parse(jsonData: Data) {
+        do {
+            let campaigns = try JSONDecoder().decode(Campaign.self, from: jsonData)
+            for campaign in campaigns.features {
+                
+                let annotation = MKPointAnnotation()
+                annotation.title = campaign.properties.title
+                annotation.subtitle = "\(campaign.properties.categoryName) - Rp \(campaign.properties.donationTarget.formatToIDR())"
+                annotation.coordinate = CLLocationCoordinate2D(latitude: campaign.geometry.coordinates[1] , longitude: campaign.geometry.coordinates[0] )
+                mapView.addAnnotation(annotation)
+                
+            }
+            
+            mapView.centerToLocation(CLLocation(latitude: campaigns.features.first?.geometry.coordinates[1] ?? 0, longitude: campaigns.features.first?.geometry.coordinates[0] ?? 0), regionRadius: 5000)
+            
+        } catch {
+            print("decode error")
+        }
+    }
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        
+        let identifier = "donasi"
+        var view: MKAnnotationView
+        
+        if let dequeuedView = mapView.dequeueReusableAnnotationView(
+            withIdentifier: identifier) {
+            dequeuedView.annotation = annotation
+            view = dequeuedView
+        } else {
+            view = MKAnnotationView(
+                annotation: annotation,
+                reuseIdentifier: identifier)
+            view.canShowCallout = true
+            view.calloutOffset = CGPoint(x: -5, y: 5)
+        }
+        
+        let pinImage = UIImage(named: "donasi")!
+        view.image = pinImage
+        view.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
+        
+        return view
+    }
+    
+}
+
+private extension MKMapView {
+    func centerToLocation(
+        _ location: CLLocation,
+        regionRadius: CLLocationDistance = 100000
+    ) {
+        let coordinateRegion = MKCoordinateRegion(
+            center: location.coordinate,
+            latitudinalMeters: regionRadius,
+            longitudinalMeters: regionRadius)
+        setRegion(coordinateRegion, animated: true)
+    }
+}

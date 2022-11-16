@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		01C887982924723D00878226 /* Callout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C887972924723D00878226 /* Callout.swift */; };
 		01EAE8892923E12500C799D4 /* Campaign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EAE8882923E12500C799D4 /* Campaign.swift */; };
 		01EAE88B2923E29600C799D4 /* campaign.json in Resources */ = {isa = PBXBuildFile; fileRef = 01EAE88A2923E29600C799D4 /* campaign.json */; };
 		01EAE88E2923E66100C799D4 /* Int+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EAE88D2923E66100C799D4 /* Int+Ext.swift */; };
@@ -22,6 +23,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		01C887972924723D00878226 /* Callout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Callout.swift; sourceTree = "<group>"; };
 		01EAE8882923E12500C799D4 /* Campaign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Campaign.swift; sourceTree = "<group>"; };
 		01EAE88A2923E29600C799D4 /* campaign.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = campaign.json; path = ../../../../../../../Downloads/campaign.json; sourceTree = "<group>"; };
 		01EAE88D2923E66100C799D4 /* Int+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Ext.swift"; sourceTree = "<group>"; };
@@ -49,6 +51,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		01C887962924723000878226 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				01C887972924723D00878226 /* Callout.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		01EAE87F2923DAC600C799D4 /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -85,6 +95,7 @@
 		01F2EBC9292298920091979C /* LocationData */ = {
 			isa = PBXGroup;
 			children = (
+				01C887962924723000878226 /* Views */,
 				01EAE88C2923E65200C799D4 /* Extension */,
 				01EAE87F2923DAC600C799D4 /* Model */,
 				01F2EBDE292298F00091979C /* ViewControllers */,
@@ -181,6 +192,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				01C887982924723D00878226 /* Callout.swift in Sources */,
 				01F2EBCF292298920091979C /* ViewController.swift in Sources */,
 				01F2EBE22922998A0091979C /* GeocodingViewController.swift in Sources */,
 				01EAE8892923E12500C799D4 /* Campaign.swift in Sources */,

@@ -21,6 +21,7 @@ class VisualizationViewController: UIViewController {
     
     func setupViews() {
         mapView.delegate = self
+        mapView.register(AnnotationView.self,forAnnotationViewWithReuseIdentifier: MKMapViewDefaultAnnotationViewReuseIdentifier)
         NSLayoutConstraint.activate([
             mapView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             mapView.topAnchor.constraint(equalTo: view.topAnchor),
@@ -67,7 +68,7 @@ extension VisualizationViewController: MKMapViewDelegate {
         do {
             if let bundlePath = Bundle.main.path(forResource: name,
                                                  ofType: "json"),
-                let jsonData = try String(contentsOfFile: bundlePath).data(using: .utf8) {
+               let jsonData = try String(contentsOfFile: bundlePath).data(using: .utf8) {
                 return jsonData
             }
         } catch {
@@ -76,19 +77,26 @@ extension VisualizationViewController: MKMapViewDelegate {
         
         return nil
     }
-
+    
     private func parse(jsonData: Data) {
         do {
             let campaigns = try JSONDecoder().decode(Campaign.self, from: jsonData)
-            for campaign in campaigns.features {
-                
-                let annotation = MKPointAnnotation()
-                annotation.title = campaign.properties.title
-                annotation.subtitle = "\(campaign.properties.categoryName) - Rp \(campaign.properties.donationTarget.formatToIDR())"
-                annotation.coordinate = CLLocationCoordinate2D(latitude: campaign.geometry.coordinates[1] , longitude: campaign.geometry.coordinates[0] )
-                mapView.addAnnotation(annotation)
-                
-            }
+            
+            let annotations = campaigns.features.map({Annotation(campaign: $0)})
+            
+            mapView.addAnnotations(annotations)
+            
+            //            LondonAttraction.allCases.map({ Annotation(attraction: $0) })
+            //
+            //            for campaign in campaigns.features {
+            //
+            //                let annotation = MKPointAnnotation()
+            //                annotation.title = campaign.properties.title
+            //                annotation.subtitle = "\(campaign.properties.categoryName) - Total Donasi: Rp \(campaign.properties.donationTarget.formatToIDR())"
+            //                annotation.coordinate = CLLocationCoordinate2D(latitude: campaign.geometry.coordinates[1] , longitude: campaign.geometry.coordinates[0] )
+            //                mapView.addAnnotation(annotation)
+            //
+            //            }
             
             mapView.centerToLocation(CLLocation(latitude: campaigns.features.first?.geometry.coordinates[1] ?? 0, longitude: campaigns.features.first?.geometry.coordinates[0] ?? 0), regionRadius: 5000)
             
@@ -102,10 +110,12 @@ extension VisualizationViewController: MKMapViewDelegate {
         let identifier = "donasi"
         var view: MKAnnotationView
         
-        if let dequeuedView = mapView.dequeueReusableAnnotationView(
-            withIdentifier: identifier) {
-            dequeuedView.annotation = annotation
-            view = dequeuedView
+        let annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: MKMapViewDefaultAnnotationViewReuseIdentifier)
+        if let annotation = annotation as? Annotation {
+            annotationView?.canShowCallout = true
+            annotationView?.detailCalloutAccessoryView = Callout(annotation: annotation)
+            annotationView?.image = UIImage(named: "donasi")
+            annotationView?.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
         } else {
             view = MKAnnotationView(
                 annotation: annotation,
@@ -114,11 +124,7 @@ extension VisualizationViewController: MKMapViewDelegate {
             view.calloutOffset = CGPoint(x: -5, y: 5)
         }
         
-        let pinImage = UIImage(named: "donasi")!
-        view.image = pinImage
-        view.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
-        
-        return view
+        return annotationView
     }
     
 }
